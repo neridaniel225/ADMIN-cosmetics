@@ -68,7 +68,7 @@ button,select,input,textarea{font-family:inherit}
 /* MAIN */
 #app{margin-left:var(--sb);flex:1;display:flex;flex-direction:column;min-height:100vh}
 #top{height:var(--tb);background:var(--w);border-bottom:1.5px solid var(--w3);display:flex;align-items:center;padding:0 18px;gap:12px;position:sticky;top:0;z-index:100}
-#ptit{font-size:15px;font-weight:700;flex:1}
+#ptit{font-size:15px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .srch{display:flex;align-items:center;gap:7px;background:var(--w2);border:1.5px solid var(--w3);border-radius:6px;padding:6px 10px;transition:border .14s;width:200px}
 .srch:focus-within{border-color:var(--w4);background:var(--w)}
 .srch svg{width:13px;height:13px;stroke:var(--g2);fill:none;stroke-width:2;flex-shrink:0}
@@ -236,6 +236,50 @@ textarea.fi{resize:vertical;min-height:76px}
   #tcta{padding:7px 10px}
   #tcta #tctal{display:none}
 }
+
+.msg-head{margin:2px 2px 12px}.msg-head h2{font-size:20px;font-weight:800;letter-spacing:-.01em}.msg-head p{font-size:12.5px;color:var(--g);margin-top:2px}
+/* ===== v10 : responsive petits ordinateurs, commandes larges, messages à côté du menu ===== */
+#app{min-width:0}
+.tw{max-width:100%}
+#sec-commandes table{min-width:0}
+#sec-commandes .cmd-row{cursor:pointer}
+#sec-commandes .cmd-row:hover td{background:var(--w2)}
+#sec-commandes td.c-prod{min-width:260px;width:30%;font-size:13px;line-height:1.5;white-space:normal}
+#sec-commandes td.c-voc{min-width:200px;width:210px}
+#sec-commandes td.c-voc audio{width:200px;height:34px;display:block}
+.c-voc .vo-none{font-size:11px;color:var(--g2)}
+.c-voc .vo-q{font-size:10.5px;color:var(--g);font-style:italic;margin-top:3px;max-height:3.2em;overflow:hidden}
+.cmd-act{display:grid;grid-template-columns:repeat(3,32px);gap:4px}
+.lvn-box{border:1.5px dashed var(--w4);border-radius:8px;padding:10px 12px;margin-top:10px;background:var(--w2)}
+.lvn-box audio{width:100%;height:36px;margin-top:8px}
+.lvn-rec{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lvn-note{margin-top:5px;padding:6px 9px;background:#fffbea;border:1px solid #f1d98a;border-radius:6px;font-size:11.5px;line-height:1.45;color:#7a5b00}
+@media(min-width:901px){
+  .gmail-wrap{grid-template-columns:minmax(300px,360px) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);height:calc(100vh - var(--tb) - 190px);min-height:440px}
+  .gmail-side{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;border-right:none;border-bottom:1px solid var(--w3);overflow:visible}
+  .gmail-side .gmail-folder{border-radius:18px;margin:0}
+  .gmail-side>div:last-child{margin:0 0 0 auto!important;padding:0!important;border:none!important}
+  .gmail-side>div:last-child button{width:auto!important}
+}
+@media(max-width:1280px){
+  :root{--sb:210px}
+  #pg{padding:12px}
+  .sb-nav .si{font-size:12.5px}
+  .c-four,.c-pay{display:none}
+  #sec-commandes td.c-voc{min-width:180px;width:180px}#sec-commandes td.c-voc audio{width:176px}
+}
+@media(max-width:1100px){
+  .c-date{display:none}
+  .sts{grid-template-columns:1fr 1fr}
+  :root{--sb:190px}
+  #sec-commandes td.c-prod{min-width:170px;width:auto}
+  #sec-commandes td.c-voc{min-width:150px;width:150px}#sec-commandes td.c-voc audio{width:146px}
+  .cmd-act{grid-template-columns:repeat(2,32px)}
+  #sec-commandes td,#sec-commandes th{padding-left:8px;padding-right:8px}
+}
+@media(max-width:900px){
+  #sec-commandes td.c-voc{min-width:170px}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -335,7 +379,7 @@ textarea.fi{resize:vertical;min-height:76px}
       <div class="srch" style="width:170px"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Client, #…" id="cmd-q" oninput="renderOrders()"/></div>
       <button class="btn btn-g btn-sm" onclick="expCsv()">CSV</button>
     </div>
-    <div class="tw"><table><thead><tr><th>#</th><th>Date</th><th>Client</th><th>WhatsApp</th><th>Produits</th><th>Fournisseur</th><th>Total</th><th>Paiement</th><th>Statut</th><th></th></tr></thead><tbody id="cmd-bd"></tbody></table></div>
+    <div class="tw"><table><thead><tr><th>#</th><th class="c-date">Date</th><th>Client</th><th>Détail de la commande</th><th>🎙️ Vocal final</th><th class="c-four">Fournisseur</th><th>Total</th><th class="c-pay">Paiement</th><th>Statut</th><th></th></tr></thead><tbody id="cmd-bd"></tbody></table></div>
   </div>
 </div>
 
@@ -495,15 +539,15 @@ textarea.fi{resize:vertical;min-height:76px}
   </div>
 </div>
 
-  </div></div>
 
 <!-- MESSAGES -->
 <div class="sec" id="sec-messages">
+  <div class="msg-head"><h2>Messages &amp; Notifications</h2><p>Toutes les commandes reçues, les messages vocaux et les notifications au même endroit.</p></div>
   <div class="gmail-wrap">
     <!-- Barre latérale "dossiers" -->
     <div class="gmail-side">
       <div class="gmail-folder on" data-folder="todo" onclick="setMsgFolder('todo',this)">📦 À traiter <span class="gmail-count" id="gf-todo">0</span></div>
-      <div class="gmail-folder" data-folder="unpaid" onclick="setMsgFolder('unpaid',this)">⏳ Paiement en attente <span class="gmail-count" id="gf-unpaid">0</span></div>
+      <div class="gmail-folder" data-folder="unpaid" onclick="setMsgFolder('unpaid',this)">💵 À encaisser <span class="gmail-count" id="gf-unpaid">0</span></div>
       <div class="gmail-folder" data-folder="shipped" onclick="setMsgFolder('shipped',this)">🚚 Expédiées <span class="gmail-count" id="gf-shipped">0</span></div>
       <div class="gmail-folder" data-folder="all" onclick="setMsgFolder('all',this)">🗂️ Toutes les commandes <span class="gmail-count" id="gf-all">0</span></div>
       <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--w3)">
@@ -558,6 +602,7 @@ textarea.fi{resize:vertical;min-height:76px}
     </div>
   </div>
 </div>
+  </div></div>
 
 <!-- MODAL -->
 <div id="mbg" onclick="bgcl(event)">
@@ -662,7 +707,7 @@ function mapProductToDb(p){
     gamme_id:p.gamme||null,brand:p.brand||'',ingredients:p.ingredients||'',usage_text:p.usage||'',skin_type:p.skinType||'',benefits:p.benefits||'',origin:p.origin||'',lot:p.lot||'',expiry:p.expiry||null,stock_alert:(p.alert==null?5:p.alert)};
 }
 function mapOrderFromDb(o){
-  return {id:o.id,date:o.date,client:o.client,phone:o.phone,products:o.products||'',items:o.items||[],fourn:o.fourn_id||'',total:Number(o.total)||0,payment:o.payment||'',status:o.status||'pending',paymentStatus:o.payment_status||'pending',notes:o.notes||'',adresse:o.adresse||'',channel:o.channel||'site',voiceClips:o.voice_clips||[],livreur:o.livreur_id||'',assignedAt:o.assigned_at||'',deliveredAt:o.delivered_at||''};
+  return {id:o.id,date:o.date,client:o.client,phone:o.phone,products:o.products||'',items:o.items||[],fourn:o.fourn_id||'',total:Number(o.total)||0,payment:o.payment||'',status:o.status||'pending',paymentStatus:o.payment_status||'pending',notes:o.notes||'',adresse:o.adresse||'',quand:o.livraison_souhaitee||((o.notes||'').match(/Livraison souhaitée : ([^|]+)/)||[])[1]||'',channel:o.channel||'site',voiceClips:o.voice_clips||[],livreur:o.livreur_id||'',lvNote:o.livreur_note||'',lvAudio:o.livreur_note_audio||'',assignedAt:o.assigned_at||'',deliveredAt:o.delivered_at||''};
 }
 function mapLivreurFromDb(l){return {id:l.id,name:l.name,phone:l.phone||'',phone2:l.phone2||'',zone:l.zone||'',vehicle:l.vehicle||'',photo:l.photo||'',notes:l.notes||'',active:l.active!==false};}
 function mapPromoFromDb(p){
@@ -742,14 +787,17 @@ function applyShopName(){
 try{const _n=localStorage.getItem('pu_shop_name');if(_n)document.addEventListener('DOMContentLoaded',()=>document.querySelectorAll('.shop-n').forEach(e=>e.textContent=_n));}catch(e){}
 async function saveSettings(fields){
   try{
-    const {error}=await sb.from('site_settings').update(fields).eq('id','main');
+    // upsert : crée la ligne « main » si elle manque, et on vérifie que quelque chose a vraiment été écrit
+    const {data,error}=await sb.from('site_settings').upsert({id:'main',...fields},{onConflict:'id'}).select();
     if(error) throw error;
+    if(!data||!data.length) throw new Error('rien n\'a été enregistré en base (droits Supabase) : relance le script SQL');
     Object.assign(SETTINGS,fields);
     if('shop_name' in fields)applyShopName();
     toast('Enregistré ✓');
   }catch(err){
     console.error('Erreur saveSettings:',err);
-    toast('Erreur : '+(err.message||'colonne manquante dans Supabase — exécute le script SQL complet'),'e');
+    const msg=String(err&&err.message||'');
+    toast('Non enregistré : '+(/column|colonne|schema cache/i.test(msg)?'une colonne manque dans Supabase — relance le script SQL complet':(msg||'erreur inconnue')),'e');
   }
 }
 async function savePayments(){
@@ -861,7 +909,7 @@ function rdSettingsForms(){
         <div class="fg"><label>Titre slide 1</label><input class="fi" id="tx-h1" value="${SETTINGS.hero_title||'KA COSMETICS'}"/></div>
         <div class="fg"><label>Sous-titre</label><input class="fi" id="tx-hs" value="${SETTINGS.hero_subtitle||'Qualité · Rareté · Luxe'}"/></div>
         <div class="fg"><label>Bouton CTA</label><input class="fi" id="tx-hc" value="${SETTINGS.hero_cta||'Découvrir →'}"/></div>
-        <div class="fg"><label>Eyebrow</label><input class="fi" id="tx-he" value="${SETTINGS.hero_eyebrow||'Collection Vintage'}"/></div>
+        <div class="fg"><label>Eyebrow</label><input class="fi" id="tx-he" value="${SETTINGS.hero_eyebrow||'Cosmétiques naturels'}"/></div>
         <button class="btn btn-k" onclick="saveSettings({hero_title:$('tx-h1').value,hero_subtitle:$('tx-hs').value,hero_cta:$('tx-hc').value,hero_eyebrow:$('tx-he').value})">Enregistrer</button>
       </div></div>
       <div class="card"><div class="ch"><span class="ct">Messages généraux</span></div><div class="cb">
@@ -888,13 +936,24 @@ function rdSettingsForms(){
   }
   const ftEl=$('st-foot');
   if(ftEl){
-    ftEl.innerHTML=`<div class="card"><div class="ch"><span class="ct">Footer</span></div><div class="cb">
-      <div class="fr"><div class="fg"><label>Instagram</label><input class="fi" id="ft-ig" value="${SETTINGS.foot_instagram||''}"/></div><div class="fg"><label>TikTok</label><input class="fi" id="ft-tk" value="${SETTINGS.foot_tiktok||''}"/></div></div>
-      <div class="fr"><div class="fg"><label>WhatsApp</label><input class="fi" id="ft-wa" value="${SETTINGS.foot_whatsapp||'+225 07 00 00 00 00'}"/></div><div class="fg"><label>Email</label><input class="fi" id="ft-em" value="${SETTINGS.foot_email||''}"/></div></div>
-      <div class="fg"><label>Adresse</label><input class="fi" id="ft-ad" value="${SETTINGS.foot_adresse||'Abidjan, Côte d\u2019Ivoire'}"/></div>
-      <div class="fg"><label>Description</label><textarea class="fi" id="ft-ds" rows="2">${SETTINGS.foot_desc||'Pièces vintage uniques — Qualité · Rareté · Luxe. Abidjan, Côte d\u2019Ivoire.'}</textarea></div>
-      <div class="fg"><label>Copyright</label><input class="fi" id="ft-cp" value="${SETTINGS.foot_copyright||'© 2025 KA Cosmetics. Tous droits réservés.'}"/></div>
-      <button class="btn btn-k" onclick="saveSettings({foot_instagram:$('ft-ig').value,foot_tiktok:$('ft-tk').value,foot_whatsapp:$('ft-wa').value,foot_email:$('ft-em').value,foot_adresse:$('ft-ad').value,foot_desc:$('ft-ds').value,foot_copyright:$('ft-cp').value})">Enregistrer</button>
+    const V=k=>escapeHtml(SETTINGS[k]||'');
+    ftEl.innerHTML=`<div class="card"><div class="ch"><span class="ct">Pied de page &amp; réseaux sociaux</span></div><div class="cb">
+      <div style="font-size:11.5px;color:var(--g);margin-bottom:10px">Un réseau laissé vide n'apparaît pas sur le site. Tu peux écrire le nom du compte (ex : <b>ka_cosmetics</b>) ou le lien complet.</div>
+      <div class="fr"><div class="fg"><label>Instagram</label><input class="fi" id="ft-ig" placeholder="ka_cosmetics" value="${V('foot_instagram')}"/></div><div class="fg"><label>TikTok</label><input class="fi" id="ft-tk" placeholder="ka_cosmetics" value="${V('foot_tiktok')}"/></div></div>
+      <div class="fr"><div class="fg"><label>Facebook</label><input class="fi" id="ft-fb" placeholder="nom de la page ou lien" value="${V('foot_facebook')}"/></div><div class="fg"><label>WhatsApp (numéro)</label><input class="fi" id="ft-wa" placeholder="+225 07 00 00 00 00" value="${V('foot_whatsapp')}"/></div></div>
+      <div class="fr"><div class="fg"><label>Email</label><input class="fi" id="ft-em" placeholder="contact@..." value="${V('foot_email')}"/></div><div class="fg"><label>Horaires</label><input class="fi" id="ft-hr" placeholder="Lun–Sam : 9h–19h" value="${V('foot_hours')}"/></div></div>
+      <div class="fg"><label>Adresse</label><input class="fi" id="ft-ad" placeholder="Abidjan, Côte d'Ivoire" value="${V('foot_adresse')}"/></div>
+      <div class="fg"><label>Description</label><textarea class="fi" id="ft-ds" rows="2" placeholder="Cosmétiques naturels — savons, huiles et parfums.">${V('foot_desc')}</textarea></div>
+      <div class="fg"><label>Copyright</label><input class="fi" id="ft-cp" placeholder="© 2026 KA Cosmetics. Tous droits réservés." value="${V('foot_copyright')}"/></div>
+      <button class="btn btn-k" onclick="saveSettings({foot_instagram:$('ft-ig').value.trim(),foot_tiktok:$('ft-tk').value.trim(),foot_facebook:$('ft-fb').value.trim(),foot_whatsapp:$('ft-wa').value.trim(),foot_email:$('ft-em').value.trim(),foot_hours:$('ft-hr').value.trim(),foot_adresse:$('ft-ad').value.trim(),foot_desc:$('ft-ds').value,foot_copyright:$('ft-cp').value})">Enregistrer</button>
+    </div></div>
+    <div class="card" style="margin-top:14px"><div class="ch"><span class="ct">Pages d'information (liens du pied de page)</span></div><div class="cb">
+      <div style="font-size:11.5px;color:var(--g);margin-bottom:10px">Écris le texte de chaque page : le lien apparaît dans le pied de page seulement s'il y a du texte.</div>
+      <div class="fg"><label>Livraison &amp; Retours</label><textarea class="fi" id="in-li" rows="4">${V('info_livraison')}</textarea></div>
+      <div class="fg"><label>FAQ (questions fréquentes)</label><textarea class="fi" id="in-fq" rows="4">${V('info_faq')}</textarea></div>
+      <div class="fg"><label>Confidentialité</label><textarea class="fi" id="in-pv" rows="4">${V('info_privacy')}</textarea></div>
+      <div class="fg"><label>Conditions générales de vente (CGV)</label><textarea class="fi" id="in-cg" rows="4">${V('info_cgv')}</textarea></div>
+      <button class="btn btn-k" onclick="saveSettings({info_livraison:$('in-li').value,info_faq:$('in-fq').value,info_privacy:$('in-pv').value,info_cgv:$('in-cg').value})">Enregistrer</button>
     </div></div>`;
   }
 }
@@ -1242,16 +1301,17 @@ function renderOrders(){
   if(f&&f!=='all')list=list.filter(o=>o.status===f);
   $('cmd-bd').innerHTML=list.map(o=>{
     const fn=FOURNS.find(x=>x.id===o.fourn);
-    return `<tr>
-      <td class="tw2 tbl">${escapeHtml(o.id)}${(o.voiceClips||[]).length?`<div><a onclick="oModal('voice-${jsq(o.id)}',voiceHtml(ORDERS.find(x=>x.id==='${jsq(o.id)}')),null)" style="cursor:pointer;font-size:10.5px;font-weight:800;color:#b45309">🎙️ Vocal</a></div>`:''}</td><td class="tg" style="font-size:11.5px">${escapeHtml(o.date)}</td>
-      <td class="tw2">${escapeHtml(o.client)}</td>
-      <td><a href="https://wa.me/${waNum(o.phone)}" target="_blank" class="wa">💬 ${escapeHtml(o.phone)}</a></td>
-      <td style="font-size:12px">${escapeHtml(o.products)}</td>
-      <td style="font-size:12px">${fn?fn.name:'—'}</td>
-      <td class="tw2">${FMT(o.total)}</td>
-      <td class="tg" style="font-size:12px">${escapeHtml(o.payment)}<br><span style="font-size:10.5px;font-weight:700;color:${payTag(o)[1]}">${payTag(o)[0]}</span></td>
+    const vu=(o.voiceClips||[]).find(x=>x.url);
+    return `<tr class="cmd-row" onclick="rowOpen(event,'${jsq(o.id)}')" title="Cliquer pour ouvrir la commande complète">
+      <td class="tw2 tbl">${escapeHtml(o.id)}</td><td class="tg c-date" style="font-size:11.5px">${escapeHtml(o.date)}</td>
+      <td class="tw2">${escapeHtml(o.client)}<div><a href="https://wa.me/${waNum(o.phone)}" target="_blank" class="wa" style="font-weight:600">💬 ${escapeHtml(o.phone)}</a></div>${o.quand?`<div style="font-size:11px;font-weight:600;color:var(--yel)">🕒 ${escapeHtml(o.quand)}</div>`:''}</td>
+      <td class="c-prod">${escapeHtml(o.products)}${o.adresse?`<div class="lv-sub" style="margin-top:3px">📍 ${escapeHtml(o.adresse)}</div>`:''}${o.lvNote||o.lvAudio?`<div class="lvn-note">🛵 Note livreur : ${escapeHtml(o.lvNote||'(vocale)')}</div>`:''}</td>
+      <td class="c-voc">${vu?`<audio controls preload="none" src="${escapeHtml(vu.url)}"></audio>${vu.transcript?`<div class="vo-q" title="${escapeHtml(vu.transcript)}">« ${escapeHtml(String(vu.transcript).split('\n').pop())} »</div>`:''}`:'<span class="vo-none">—</span>'}</td>
+      <td class="c-four" style="font-size:12px">${fn?fn.name:'—'}</td>
+      <td class="tw2">${FMT(o.total)}<div style="font-size:10.5px;font-weight:700;color:${payTag(o)[1]}">${payTag(o)[0]}</div></td>
+      <td class="tg c-pay" style="font-size:12px">${escapeHtml(o.payment)}<br><span style="font-size:10.5px;font-weight:700;color:${payTag(o)[1]}">${payTag(o)[0]}</span></td>
       <td>${stBdg(o.status)}${(()=>{const l=LIVREURS.find(x=>x.id===o.livreur);return l?`<div style="font-size:10.5px;font-weight:800;margin-top:3px;color:var(--blu)">🛵 ${escapeHtml(l.name)}</div>`:'';})()}</td>
-      <td><div style="display:flex;gap:4px">
+      <td><div class="cmd-act">
         <button class="ib" title="Avancer" onclick="nxtSt('${jsq(o.id)}')"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg></button>
         <button class="ib" title="Message WhatsApp au client" onclick="sendWAClient('${jsq(o.id)}')" style="color:var(--blu)"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></button>
         <button class="ib" title="Assigner à un livreur" onclick="assignOne('${jsq(o.id)}')" style="color:var(--blu)">🛵</button>
@@ -1282,7 +1342,7 @@ function sendWA(id){
   const fn=FOURNS.find(x=>x.id===o.fourn);
   if(!fn){toast('Pas de fournisseur lié à cette commande','w');return;}
   // Le fournisseur ne voit jamais le prix de vente — seulement le produit et les coordonnées du client
-  const msg=`Bonjour ${fn.contact} 👋\n\n*COMMANDE KA Cosmetics ${o.id}*\n\n📦 Produit(s) à préparer :\n${o.products}\n\n👤 Client : ${o.client}\n📞 WhatsApp client : ${o.phone}\n\n📍 Adresse :\n${o.adresse||'Non renseignée'}\n\nMerci de contacter le client pour organiser la livraison. Merci de préparer et expédier 🙏`;
+  const msg=`Bonjour ${fn.contact} 👋\n\n*COMMANDE KA Cosmetics ${o.id}*\n\n📦 Produit(s) à préparer :\n${o.products}\n\n👤 Client : ${o.client}\n📞 WhatsApp client : ${o.phone}${orderVoiceUrl(o)?'\n\n🎙️ Vocal du client (à écouter) :\n'+orderVoiceUrl(o):''}${o.quand?'\n\n🕒 Livraison souhaitée : '+o.quand:''}\n\n📍 Adresse :\n${o.adresse||'Non renseignée'}\n\nMerci de contacter le client pour organiser la livraison. Merci de préparer et expédier 🙏`;
   window.open(`https://wa.me/${fn.phone.replace(/\s+/g,'')}?text=${encodeURIComponent(brandTxt(msg))}`,'_blank');
   toast('Message WA → '+fn.name);
 }
@@ -1680,7 +1740,7 @@ function rdLivreurs(){
       <div class="lv-nums"><div><b>${cnt(done,dKey,10)}</b><span>Aujourd'hui</span></div><div><b>${cnt(done,mKey,7)}</b><span>Ce mois</span></div><div><b>${cnt(done,yKey,4)}</b><span>Cette année</span></div><div><b>${done.length}</b><span>Total</span></div></div>
       ${lvSpark(ser.vals,ser.labels)}
       <div class="lv-cur"><strong>${cur.length} commande(s) à livrer</strong>
-        ${cur.map(o=>`<div class="row"><span style="min-width:0">${escapeHtml(o.id)} · ${escapeHtml(o.client)}<br><span class="lv-sub">📍 ${escapeHtml(o.adresse||'—')}</span></span><span style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-g btn-xs" title="Marquer livrée" onclick="lvMarkDelivered('${jsq(o.id)}')">✓ Livrée</button><button class="btn btn-g btn-xs" title="Retirer" onclick="lvUnassign('${jsq(o.id)}')">✕</button></span></div>`).join('')}
+        ${cur.map(o=>`<div class="row"><span style="min-width:0">${escapeHtml(o.id)} · ${escapeHtml(o.client)}<br><span class="lv-sub">📍 ${escapeHtml(o.adresse||'—')}${o.quand?' · 🕒 '+escapeHtml(o.quand):''}</span>${o.lvNote||o.lvAudio?`<br><span class="lv-sub">📝 ${escapeHtml(o.lvNote||'Note vocale')}${o.lvAudio?' 🎙️':''}</span>`:''}</span><span style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-g btn-xs" title="Marquer livrée" onclick="lvMarkDelivered('${jsq(o.id)}')">✓ Livrée</button><button class="btn btn-g btn-xs" title="Retirer" onclick="lvUnassign('${jsq(o.id)}')">✕</button></span></div>`).join('')}
       </div>
       <div class="lv-acts">
         <button class="btn btn-k btn-sm" onclick="openAssign('${jsq(l.id)}')">+ Assigner des commandes</button>
@@ -1713,6 +1773,7 @@ function openAssign(lid){
   const body=`<input type="hidden" id="as-lv" value="${escapeHtml(lid)}"/>
     <div class="info-box" style="margin-bottom:10px">Coche les commandes que <strong>${escapeHtml(l.name)}</strong> doit livrer. Les commandes déjà livrées, annulées ou confiées à un autre livreur ne sont pas affichées.</div>
     ${list.map(o=>`<label class="lv-chk"><input type="checkbox" class="as-ck" value="${escapeHtml(o.id)}" ${o.livreur===lid?'checked':''}/><span><strong>${escapeHtml(o.id)}</strong> · ${escapeHtml(o.client)} · ${FMT(o.total)}<br><span class="lv-sub">📍 ${escapeHtml(o.adresse||'adresse non renseignée')} — ${escapeHtml(o.products)}</span></span></label>`).join('')||'<div class="emp"><p>Aucune commande à assigner.</p></div>'}
+    ${lvNoteFields(null,'Cette note sera ajoutée à toutes les commandes cochées.')}
     <label style="display:flex;gap:8px;align-items:center;font-size:13px;margin-top:8px"><input type="checkbox" id="as-ship" checked/> Passer les commandes en « Expédiée »</label>
     <label style="display:flex;gap:8px;align-items:center;font-size:13px;margin-top:6px"><input type="checkbox" id="as-wa" checked/> Ouvrir WhatsApp avec le message pour le livreur</label>`;
   oModal('assign-livreur',body,doSave);
@@ -1724,8 +1785,63 @@ function assignOne(oid){
   oModal('assign-one',`<input type="hidden" id="ao-oid" value="${escapeHtml(oid)}"/>
     <div class="info-box" style="margin-bottom:10px">Commande <strong>${escapeHtml(o.id)}</strong> · ${escapeHtml(o.client)} · 📍 ${escapeHtml(o.adresse||'—')}</div>
     <div class="fg"><label>Livreur</label><select class="fi" id="ao-lv">${act.map(l=>`<option value="${l.id}"${o.livreur===l.id?' selected':''}>${escapeHtml(l.name)}</option>`).join('')}</select></div>
-    <label style="display:flex;gap:8px;align-items:center;font-size:13px"><input type="checkbox" id="as-ship" checked/> Passer la commande en « Expédiée »</label>
+    ${lvNoteFields(o,'')}
+    <label style="display:flex;gap:8px;align-items:center;font-size:13px;margin-top:10px"><input type="checkbox" id="as-ship" checked/> Passer la commande en « Expédiée »</label>
     <label style="display:flex;gap:8px;align-items:center;font-size:13px;margin-top:6px"><input type="checkbox" id="as-wa" checked/> Ouvrir WhatsApp avec le message pour le livreur</label>`,doSave);
+}
+
+// ---- note pour le livreur : texte + vocal
+const LVN={rec:null,stream:null,chunks:[],blob:null,mime:'',url:'',t:null};
+function lvnStop(){try{LVN.rec&&LVN.rec.state!=='inactive'&&LVN.rec.stop();}catch(e){}try{LVN.stream&&LVN.stream.getTracks().forEach(t=>t.stop());}catch(e){}clearTimeout(LVN.t);LVN.rec=null;LVN.stream=null;}
+function lvnFields(){return '';}
+function lvNoteFields(o,hint){
+  lvnStop();LVN.blob=null;LVN.mime='';LVN.url=(o&&o.lvAudio)||'';
+  return `<div class="lvn-box">
+    <div style="font-size:12.5px;font-weight:800;margin-bottom:6px">🛵 Note pour le livreur <span style="font-weight:500;color:var(--g)">(facultatif)</span></div>
+    ${hint?`<div style="font-size:11.5px;color:var(--g);margin-bottom:6px">${hint}</div>`:''}
+    <textarea class="fi" id="lvn-txt" rows="2" placeholder="Ex : appeler avant d'arriver, portail bleu, client absent le matin…">${escapeHtml((o&&o.lvNote)||'')}</textarea>
+    <div class="lvn-rec" style="margin-top:8px"><button type="button" class="btn btn-g btn-sm" id="lvn-btn" onclick="lvnToggle()">🎙️ Enregistrer une note vocale</button><span id="lvn-st" style="font-size:12px;color:var(--g)"></span><button type="button" class="btn btn-g btn-sm" id="lvn-del" onclick="lvnClear()" style="display:${LVN.url?'inline-flex':'none'}">✕ Supprimer le vocal</button></div>
+    <audio id="lvn-au" controls style="display:${LVN.url?'block':'none'}" ${LVN.url?`src="${escapeHtml(LVN.url)}"`:''}></audio>
+  </div>`;
+}
+async function lvnToggle(){
+  if(LVN.rec&&LVN.rec.state==='recording'){lvnStop();return;}
+  if(!navigator.mediaDevices||!window.MediaRecorder){toast("L'enregistrement n'est pas possible sur ce navigateur",'e');return;}
+  try{
+    LVN.stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    const mt=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg'].find(t=>MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t))||'';
+    LVN.chunks=[];LVN.rec=mt?new MediaRecorder(LVN.stream,{mimeType:mt}):new MediaRecorder(LVN.stream);
+    LVN.rec.ondataavailable=e=>{if(e.data&&e.data.size)LVN.chunks.push(e.data);};
+    LVN.rec.onstop=()=>{
+      const mime=(LVN.rec&&LVN.rec.mimeType)||mt||'audio/webm';
+      LVN.blob=new Blob(LVN.chunks,{type:mime});LVN.mime=mime;LVN.url='';
+      const au=$('lvn-au');if(au){au.src=URL.createObjectURL(LVN.blob);au.style.display='block';}
+      const b=$('lvn-btn');if(b)b.textContent='🎙️ Refaire le vocal';
+      const d=$('lvn-del');if(d)d.style.display='inline-flex';
+      const st=$('lvn-st');if(st)st.textContent='✓ vocal prêt';
+    };
+    LVN.rec.start();
+    $('lvn-btn').textContent='⏹ Arrêter';$('lvn-st').textContent='🔴 Je t\'écoute…';
+    LVN.t=setTimeout(lvnStop,120000);
+  }catch(e){console.error(e);toast('Autorise le micro pour enregistrer','e');lvnStop();}
+}
+function lvnClear(){lvnStop();LVN.blob=null;LVN.url='';const au=$('lvn-au');if(au){au.removeAttribute('src');au.style.display='none';}const d=$('lvn-del');if(d)d.style.display='none';const b=$('lvn-btn');if(b)b.textContent='🎙️ Enregistrer une note vocale';const st=$('lvn-st');if(st)st.textContent='';}
+async function lvnUpload(){
+  if(!LVN.blob)return LVN.url||'';
+  const ext=/mp4/.test(LVN.mime)?'m4a':/ogg/.test(LVN.mime)?'ogg':'webm';
+  const path='notes-livreur/'+Date.now()+'-'+Math.random().toString(36).slice(2,7)+'.'+ext;
+  const {error}=await sb.storage.from('voice-orders').upload(path,LVN.blob,{contentType:(LVN.mime||'audio/webm').split(';')[0],upsert:false});
+  if(error)throw error;
+  return sb.storage.from('voice-orders').getPublicUrl(path).data.publicUrl;
+}
+async function updOrderSafe(id,patch){
+  let {error}=await sb.from('orders').update(patch).eq('id',id);
+  if(error&&/livreur_note/i.test(error.message||'')){
+    const p2={...patch};delete p2.livreur_note;delete p2.livreur_note_audio;
+    ({error}=await sb.from('orders').update(p2).eq('id',id));
+    if(!error)toast('Assigné, mais la note n\'est pas enregistrée : relance le script SQL (colonnes livreur_note)','w');
+  }
+  if(error)throw error;
 }
 async function saveAssign(){
   const ship=$('as-ship')?.checked,wa=$('as-wa')?.checked;
@@ -1735,13 +1851,23 @@ async function saveAssign(){
     removed=[...document.querySelectorAll('.as-ck:not(:checked)')].map(c=>c.value).filter(id=>{const o=ORDERS.find(x=>x.id===id);return o&&o.livreur===lid;});}
   if(!lid){toast('Choisis un livreur','e');return false;}
   const now=new Date().toISOString();
+  const single=!!$('ao-oid');
+  const noteTxt=($('lvn-txt')?.value||'').trim();
+  let noteUrl='';
+  try{noteUrl=await lvnUpload();}catch(e){console.error(e);toast('Le vocal n\'a pas pu être envoyé : '+(e.message||'erreur'),'e');return false;}
+  lvnStop();
   try{
     for(const id of ids){
       const o=ORDERS.find(x=>x.id===id);if(!o)continue;
       const patch={livreur_id:lid,assigned_at:(o.livreur===lid&&o.assignedAt)?o.assignedAt:now};
       if(ship&&(o.status==='pending'||o.status==='confirmed'))patch.status='shipped';
-      const {error}=await sb.from('orders').update(patch).eq('id',id);if(error)throw error;
+      if(single||noteTxt||noteUrl){
+        patch.livreur_note=single?noteTxt:[o.lvNote,noteTxt].filter(Boolean).join('\n');
+        patch.livreur_note_audio=single?noteUrl:(noteUrl||o.lvAudio||'');
+      }
+      await updOrderSafe(id,patch);
       o.livreur=lid;o.assignedAt=patch.assigned_at;if(patch.status)o.status=patch.status;
+      if('livreur_note' in patch){o.lvNote=patch.livreur_note;o.lvAudio=patch.livreur_note_audio;}
     }
     for(const id of removed){
       const {error}=await sb.from('orders').update({livreur_id:null,assigned_at:null}).eq('id',id);if(error)throw error;
@@ -1763,7 +1889,11 @@ function lvMessage(l,orders){
     lines.push(`👤 Client : ${o.client}`);
     lines.push(`📞 Tél : ${o.phone}`);
     lines.push(`📍 Lieu : ${o.adresse||'à confirmer avec le client'}`);
+    if(o.quand)lines.push(`🕒 Quand : ${o.quand}`);
     lines.push(`📦 ${o.products}`);
+    if(o.lvNote)lines.push(`📝 Note : ${o.lvNote}`);
+    if(o.lvAudio)lines.push(`🎙️ Note vocale : ${o.lvAudio}`);
+    if(orderVoiceUrl(o))lines.push(`🎧 Vocal du client : ${orderVoiceUrl(o)}`);
     lines.push(o.paymentStatus==='paid'?'✅ Déjà payé':`💵 À encaisser : ${FMT(o.total)} (paiement à la livraison)`);
     lines.push('');
   });
@@ -2094,7 +2224,7 @@ function hupM(input, previewId) { hup(input, previewId, false); }
 // MODAL
 let _mSave=null, _eidx=null;
 function oModal(key,body,saveFn){
-  const titles={'add-livreur':'Nouveau livreur','edit-livreur':'Modifier le livreur','assign-livreur':'🛵 Assigner des commandes','assign-one':'🛵 Assigner un livreur','add-gamme':'Nouvelle gamme','edit-gamme':'Modifier la gamme','stock-in':'Réception de stock','stock-out':'Sortie de stock','stock-adj':'Corriger le stock','voice':'🎙️ Commande vocale','add-prod':'Nouveau produit','edit-prod':'Modifier produit','add-cat':'Nouvelle catégorie','add-fourn':'Ajouter boutique partenaire','edit-fourn':'Modifier boutique','add-promo':'Nouveau bon','edit-promo':'Modifier bon','add-order':'Nouvelle commande','edit-order':'Modifier commande','add-slide':'Ajouter slide','add-tx':'Nouvelle transaction','edit-tx':'Modifier transaction','add-mq':'Marquee','add-tk':'Ticker','edit-mq':'Modifier marquee','edit-tk':'Modifier ticker','add-navlink':'Ajouter lien de navigation','edit-navlink':'Modifier lien de navigation'};
+  const titles={'add-livreur':'Nouveau livreur','edit-livreur':'Modifier le livreur','assign-livreur':'🛵 Assigner des commandes','assign-one':'🛵 Assigner un livreur','order-full':'Commande complète','add-gamme':'Nouvelle gamme','edit-gamme':'Modifier la gamme','stock-in':'Réception de stock','stock-out':'Sortie de stock','stock-adj':'Corriger le stock','voice':'🎙️ Commande vocale','add-prod':'Nouveau produit','edit-prod':'Modifier produit','add-cat':'Nouvelle catégorie','add-fourn':'Ajouter boutique partenaire','edit-fourn':'Modifier boutique','add-promo':'Nouveau bon','edit-promo':'Modifier bon','add-order':'Nouvelle commande','edit-order':'Modifier commande','add-slide':'Ajouter slide','add-tx':'Nouvelle transaction','edit-tx':'Modifier transaction','add-mq':'Marquee','add-tk':'Ticker','edit-mq':'Modifier marquee','edit-tk':'Modifier ticker','add-navlink':'Ajouter lien de navigation','edit-navlink':'Modifier lien de navigation'};
   const base=Object.keys(titles).find(t=>key.startsWith(t))||key;
   $('mtit').textContent=titles[base]||key.replace(/-/g,' ');
   $('mbdy').innerHTML=body;
@@ -2112,7 +2242,7 @@ async function doSave(){
     const cl=$('of-cl')?.value,ph=$('of-ph')?.value;if(!cl||!ph){toast('Client et WhatsApp requis','e');return;}
     const existingId=$('of-id')?.value||'';
     const existing=existingId?ORDERS.find(x=>x.id===existingId):null;
-    const o={id:existingId||('PU-'+String(Date.now()).slice(-4)),date:existing?existing.date:today(),client:cl,phone:ph,products:$('of-pr')?.value||'',fourn:$('of-fn')?.value||'',payment:$('of-py')?.value||'',total:+($('of-tt')?.value||0),status:$('of-st')?.value||'pending',notes:$('of-nt')?.value||'',adresse:existing?existing.adresse:'',livreur:$('of-lv')?.value||''};
+    const o={id:existingId||('KA-'+String(Date.now()).slice(-4)),date:existing?existing.date:today(),client:cl,phone:ph,products:$('of-pr')?.value||'',fourn:$('of-fn')?.value||'',payment:$('of-py')?.value||'',total:+($('of-tt')?.value||0),status:$('of-st')?.value||'pending',notes:$('of-nt')?.value||'',adresse:existing?existing.adresse:'',livreur:$('of-lv')?.value||''};
     o.assignedAt=(existing&&existing.assignedAt&&existing.livreur===o.livreur)?existing.assignedAt:(o.livreur?new Date().toISOString():'');
     o.deliveredAt=o.status==='delivered'?((existing&&existing.deliveredAt)||new Date().toISOString()):'';
     try{
@@ -2407,7 +2537,7 @@ let msgSelectedId=null;
 // À traiter = payées, pas encore expédiées ; En attente = pas (encore) payées ; Expédiées ; Toutes
 function msgFolderLists(){
   const act=msgOrders();
-  const todo=act.filter(o=>o.paymentStatus==='paid'&&(o.status==='pending'||o.status==='confirmed'));
+  const todo=act.filter(o=>o.paymentStatus!=='failed'&&(o.status==='pending'||o.status==='confirmed'));
   const unpaid=act.filter(o=>o.paymentStatus!=='paid');
   const shipped=act.filter(o=>o.status==='shipped');
   return {todo,unpaid,shipped,all:act};
@@ -2486,15 +2616,12 @@ async function deleteMsgItem(type,id){
     toast('Supprimé définitivement');
   }catch(err){console.error(err);toast('Erreur lors de la suppression','e');}
 }
-function selectMsgItem(type,id,el){
-  msgSelectedId=id;
-  document.querySelectorAll('.gmail-item').forEach(it=>it.classList.remove('on'));
-  if(el)el.classList.add('on');
-  const detail=$('gmail-detail');
-  {
-    const o=ORDERS.find(x=>x.id===id);if(!o)return;
-    const fn=FOURNS.find(x=>x.id===o.fourn);
-    detail.innerHTML=`
+
+// ---- fiche complète d'une commande (utilisée par Messages et par le clic dans Commandes)
+function orderDetailHtml(o,fn){
+  fn=fn||FOURNS.find(x=>x.id===o.fourn);
+  const lv=LIVREURS.find(x=>x.id===o.livreur);
+  return `
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
         <div>
           <div style="font-size:18px;font-weight:800;margin-bottom:3px">${escapeHtml(o.client)}</div>
@@ -2505,11 +2632,13 @@ function selectMsgItem(type,id,el){
       <div style="font-size:12.5px;color:var(--g);margin-bottom:16px;line-height:1.8">
         📞 <a href="https://wa.me/${waNum(o.phone)}" target="_blank" style="color:var(--blu)">${escapeHtml(o.phone)||'—'}</a> &nbsp;·&nbsp; ${escapeHtml(o.date)}<br>
         📍 ${escapeHtml(o.adresse)||'—'}<br>
+        🕒 Livraison souhaitée : <strong>${escapeHtml(o.quand||'—')}</strong><br>
         💳 ${escapeHtml(o.payment)} &nbsp;·&nbsp; <strong>${FMT(o.total)}</strong>
         <br><span style="display:inline-block;margin-top:6px;padding:3px 10px;border-radius:12px;font-size:11.5px;font-weight:700;background:${payTag(o)[2]};color:${payTag(o)[1]}">${payTag(o)[0]}</span>
       </div>
       <div style="background:var(--w2);border-left:3px solid var(--red);padding:12px 14px;border-radius:6px;font-size:13px;line-height:1.7;margin-bottom:18px">📦 ${escapeHtml(o.products)}</div>
       ${voiceHtml(o)}
+      ${lvNoteHtml(o,lv)}
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-k btn-sm" onclick="sendWAClient('${jsq(o.id)}')">💬 ${o.paymentStatus==='paid'?'Confirmer au client':'Relancer le client'}</button>
         <button class="btn btn-g btn-sm" onclick="waClientDirect('${jsq(o.id)}')">✍️ Écrire au client</button>
@@ -2517,6 +2646,36 @@ function selectMsgItem(type,id,el){
         <button class="ib" onclick="oModal('edit-order',orderForm(ORDERS.find(x=>x.id==='${escapeHtml(o.id)}')||{}),doSave)" title="Modifier"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
         <button class="ib d" onclick="deleteMsgItem('order','${jsq(o.id)}')" title="Supprimer définitivement"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
       </div>`;
+}
+function lvNoteHtml(o,lv){
+  if(!o.lvNote&&!o.lvAudio&&!lv)return '';
+  return `<div class="lvn-box" style="background:#fffbea;border-color:#f1d98a;margin:0 0 16px"><div style="font-size:12px;font-weight:800;margin-bottom:4px">🛵 Livreur : ${lv?escapeHtml(lv.name):'non assigné'}</div>${o.lvNote?`<div style="font-size:12.5px;white-space:pre-line">📝 ${escapeHtml(o.lvNote)}</div>`:''}${o.lvAudio?`<audio controls preload="none" src="${escapeHtml(o.lvAudio)}"></audio>`:''}${!o.lvNote&&!o.lvAudio?'<div style="font-size:11.5px;color:var(--g)">Aucune note pour le livreur.</div>':''}</div>`;
+}
+function orderVoiceUrl(o){const c=(o.voiceClips||[]).find(x=>x.url);return c?c.url:'';}
+function rowOpen(ev,id){if(ev.target.closest('a,button,audio,select,input,textarea,.ib'))return;openFullOrder(id);}
+function openFullOrder(id){
+  const o=ORDERS.find(x=>x.id===id);if(!o)return;
+  if(msgOrders().includes(o)){
+    msgCurrentFolder='all';msgRenderCount=100000;
+    go('messages');
+    document.querySelectorAll('.gmail-folder').forEach(f=>f.classList.toggle('on',f.dataset.folder==='all'));
+    const s=$('msgSearchInput');if(s)s.value='';
+    rdMessages();
+    selectMsgItem('order',id,null);
+    setTimeout(()=>{const it=[...document.querySelectorAll('.gmail-item')].find(e=>(e.getAttribute('onclick')||'').includes("'"+jsq(id)+"'"));if(it){it.classList.add('on');it.scrollIntoView({block:'center'});}},30);
+  }else{
+    oModal('order-full',orderDetailHtml(o),null);
+  }
+}
+function selectMsgItem(type,id,el){
+  msgSelectedId=id;
+  document.querySelectorAll('.gmail-item').forEach(it=>it.classList.remove('on'));
+  if(el)el.classList.add('on');
+  const detail=$('gmail-detail');
+  {
+    const o=ORDERS.find(x=>x.id===id);if(!o)return;
+    const fn=FOURNS.find(x=>x.id===o.fourn);
+    detail.innerHTML=orderDetailHtml(o,fn);
   }
 }
 
@@ -2542,7 +2701,7 @@ function sendWAClient(id){
     'Merci pour ta commande *KA Cosmetics '+o.id+'* ! 🖤',
     '✅ Ton paiement de *'+FMT(o.total)+'* est bien reçu.','',
     '📦 *Commande :*',o.products,'',
-    '📍 *Livraison :* '+(o.adresse||'—'),'',
+    '📍 *Livraison :* '+(o.adresse||'—')+(o.quand?' ('+o.quand+')':''),'',
     'On te contacte très vite pour organiser la livraison. À bientôt !','KA Cosmetics'
   ]:[
     'Bonjour '+prenom+' 👋','',
@@ -2571,6 +2730,8 @@ function sendWAFourn(id){
     '👤 *Client :* '+o.client,
     '📞 *WhatsApp client :* '+(o.phone||'—'),
     '',
+    ...(orderVoiceUrl(o)?['🎙️ *Vocal du client (à écouter) :*',orderVoiceUrl(o),'']:[]),
+    ...(o.quand?['🕒 *Livraison souhaitée :* '+o.quand,'']:[]),
     '📍 *Adresse de livraison :*',
     (o.adresse||'Non renseignée'),
     '',
